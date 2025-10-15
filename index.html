@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktv - A.J. Electronics</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary: #0a0a14;
+            --secondary: #1a1a2e;
+            --accent: #6a0dad;
+            --highlight: #00b4d8;
+            --light: #e2e2e2;
+            --dark: #121212;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--light);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--white);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(106, 13, 173, 0.2) 50%, transparent 70%);
+            z-index: 1;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logo-img {
+            height: 70px;
+            width: auto;
+            filter: drop-shadow(0 0 5px rgba(0, 180, 216, 0.5));
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo-text h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .logo-text span {
+            color: var(--highlight);
+            text-shadow: 0 0 8px rgba(0, 180, 216, 0.5);
+        }
+        
+        .logo-text .tagline {
+            font-style: italic;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: var(--light);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 180, 216, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        nav a:hover::before {
+            left: 100%;
+        }
+        
+        nav a:hover, nav a.active {
+            background: rgba(0, 180, 216, 0.2);
+            box-shadow: 0 0 15px rgba(0, 180, 216, 0.3);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .section {
+            display: none;
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            page-break-inside: avoid;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(106, 13, 173, 0.2);
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(106, 13, 173, 0.5);
+        }
+        
+        .section-title {
+            color: var(--highlight);
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px rgba(0, 180, 216, 0.3);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--accent), #4a0a8a);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(106, 13, 173, 0.3);
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #7a1dc2, var(--accent));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(106, 13, 173, 0.5);
+        }
+        
+        .btn-download {
+            background: linear-gradient(135deg, var(--highlight), #0077b6);
+            box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
+        }
+        
+        .btn-download:hover {
+            background: linear-gradient(135deg, #0077b6, var(--highlight));
+            box-shadow: 0 6px 20px rgba(0, 180, 216, 0.5);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--highlight);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(106, 13, 173, 0.3);
+            border-radius: 6px;
+            font-size: 1rem;
+            background: rgba(10, 10, 20, 0.7);
+            color: var(--light);
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--highlight);
+            box-shadow: 0 0 10px rgba(0, 180, 216, 0.3);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            page-break-inside: avoid;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(106, 13, 173, 0.3);
+        }
+        
+        th {
+            background: linear-gradient(135deg, var(--accent), #4a0a8a);
+            color: var(--white);
+            font-weight: 600;
+        }
+        
+        td {
+            background: rgba(10, 10, 20, 0.5);
+        }
+        
+        .totals {
+            width: 50%;
+            margin-left: auto;
+            margin-top: 1rem;
+            page-break-inside: avoid;
+            background: rgba(10, 10, 20, 0.7);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(106, 13, 173, 0.3);
+        }
+        
+        .totals-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        
+        .totals-row.total {
+            font-weight: bold;
+            border-top: 1px solid rgba(106, 13, 173, 0.5);
+            font-size: 1.1rem;
+            color: var(--highlight);
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+        
+        .company-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            page-break-inside: avoid;
+            gap: 1.5rem;
+        }
+        
+        .company-logo {
+            text-align: center;
+            flex: 1;
+            background: rgba(10, 10, 20, 0.7);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(106, 13, 173, 0.3);
+        }
+        
+        .company-logo h2 {
+            color: var(--highlight);
+            margin-bottom: 10px;
+        }
+        
+        .company-logo p {
+            color: var(--light);
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .client-info {
+            background: rgba(10, 10, 20, 0.7);
+            padding: 1.5rem;
+            border-radius: 8px;
+            flex: 1;
+            border: 1px solid rgba(106, 13, 173, 0.3);
+        }
+        
+        .client-info h3 {
+            color: var(--highlight);
+            margin-bottom: 10px;
+        }
+        
+        .terms {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(106, 13, 173, 0.5);
+            page-break-inside: avoid;
+        }
+        
+        .terms h3 {
+            margin-bottom: 0.5rem;
+            color: var(--highlight);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 180, 216, 0.2) 50%, transparent 70%);
+        }
+        
+        footer p {
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .pdf-section {
+            page-break-inside: avoid;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .company-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .totals {
+                width: 100%;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .logo-container {
+                flex-direction: column;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="../interaktv-logo.png" alt="Interaktv Logo" class="logo-img">
+            <div class="logo-text">
+                <h1><span>Interaktv</span> - A.J. Electronics</h1>
+                <p class="tagline">Beyond Reality</p>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="nav-link active" data-target="quotation">Quotation</a></li>
+                <li><a href="#" class="nav-link" data-target="invoice">Invoice</a></li>
+                <li><a href="#" class="nav-link" data-target="bill">Bill</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <!-- Quotation Section -->
+        <section id="quotation" class="section active">
+            <div class="section-header">
+                <h2 class="section-title">Quotation</h2>
+                <button id="downloadQuotation" class="btn btn-download">Download as PDF</button>
+            </div>
+            
+            <div class="company-info pdf-section">
+                <div class="company-logo">
+                    <h2>A.J. Electronics</h2>
+                    <p>Brand: Interaktv</p>
+                    <p><input type="text" id="quotationCompanyAddress" placeholder="Company Address"></p>
+                    <p><input type="text" id="quotationCompanyGST" placeholder="GSTIN"></p>
+                    <p><input type="text" id="quotationCompanyContact" placeholder="Phone | Email"></p>
+                </div>
+                
+                <div class="client-info">
+                    <h3>Bill To:</h3>
+                    <input type="text" id="quotationClientName" placeholder="Client Name">
+                    <input type="text" id="quotationClientAttn" placeholder="Attn:">
+                    <input type="text" id="quotationClientContact" placeholder="Contact">
+                    <input type="text" id="quotationSubject" placeholder="Subject">
+                </div>
+            </div>
+            
+            <div class="form-group pdf-section">
+                <label for="quotationDate">Date:</label>
+                <input type="date" id="quotationDate">
+            </div>
+            
+            <div class="pdf-section">
+                <h3 style="color: var(--highlight); margin-bottom: 1rem;">Product Details</h3>
+                <table id="quotationTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Description</th>
+                            <th>Specifications</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>01</td>
+                            <td><input type="text" placeholder="Product Description"></td>
+                            <td><textarea placeholder="Specifications" rows="3"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>02</td>
+                            <td><input type="text" placeholder="Product Description"></td>
+                            <td><textarea placeholder="Specifications" rows="3"></textarea></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button id="addQuotationItem" class="btn">Add Item</button>
+            </div>
+            
+            <div class="pdf-section">
+                <h3 style="color: var(--highlight); margin-bottom: 1rem;">Pricing</h3>
+                <table id="quotationPricingTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Particulars</th>
+                            <th>Qty</th>
+                            <th>Rate (₹)</th>
+                            <th>Amount (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>01</td>
+                            <td><input type="text" placeholder="Particulars"></td>
+                            <td><input type="number" placeholder="Qty"></td>
+                            <td><input type="number" placeholder="Rate"></td>
+                            <td>0.00</td>
+                        </tr>
+                        <tr>
+                            <td>02</td>
+                            <td><input type="text" placeholder="Particulars"></td>
+                            <td><input type="number" placeholder="Qty"></td>
+                            <td><input type="number" placeholder="Rate"></td>
+                            <td>0.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button id="addQuotationPricingItem" class="btn">Add Pricing Item</button>
+            </div>
+            
+            <div class="totals pdf-section">
+                <div class="totals-row">
+                    <span>Subtotal:</span>
+                    <span>₹0.00</span>
+                </div>
+                <div class="totals-row">
+                    <span>CGST @ 9%:</span>
+                    <span>₹0.00</span>
+                </div>
+                <div class="totals-row">
+                    <span>SGST @ 9%:</span>
+                    <span>₹0.00</span>
+                </div>
+                <div class="totals-row total">
+                    <span>Grand Total:</span>
+                    <span>₹0.00</span>
+                </div>
+            </div>
+            
+            <div class="terms pdf-section">
+                <h3>Payment Terms</h3>
+                <textarea id="quotationPaymentTerms" rows="2" placeholder="Payment terms..."></textarea>
+                
+                <h3>Delivery</h3>
+                <textarea id="quotationDelivery" rows="2" placeholder="Delivery details..."></textarea>
+                
+                <h3>Exclusions</h3>
+                <textarea id="quotationExclusions" rows="2" placeholder="Exclusions..."></textarea>
+                
+                <h3>TERMS & CONDITIONS</h3>
+                <textarea id="quotationTerms" rows="3" placeholder="Terms and conditions..."></textarea>
+            </div>
+        </section>
+        
+        <!-- Invoice Section -->
+        <section id="invoice" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Invoice</h2>
+                <button id="downloadInvoice" class="btn btn-download">Download as PDF</button>
+            </div>
+            
+            <div class="company-info pdf-section">
+                <div class="company-logo">
+                    <h2>A.J. Electronics</h2>
+                    <p>Brand: Interaktv</p>
+                    <p><input type="text" id="invoiceCompanyAddress" placeholder="Company Address"></p>
+                    <p><input type="text" id="invoiceCompanyGST" placeholder="GSTIN"></p>
+                    <p><input type="text" id="invoiceCompanyContact" placeholder="Phone | Email"></p>
+                </div>
+                
+                <div class="client-info">
+                    <h3>Bill To:</h3>
+                    <input type="text" id="invoiceClient" placeholder="Client Name">
+                    <input type="text" id="invoiceAddress" placeholder="Address">
+                    <input type="text" id="invoiceGST" placeholder="GSTIN">
+                </div>
+            </div>
+            
+            <div class="form-row pdf-section">
+                <div class="form-group">
+                    <label for="invoiceDate">Invoice Date:</label>
+                    <input type="date" id="invoiceDate">
+                </div>
+                <div class="form-group">
+                    <label for="invoiceNo">Invoice No:</label>
+                    <input type="text" id="invoiceNo" placeholder="INV-001">
+                </div>
+            </div>
+            
+            <div class="pdf-section">
+                <table id="invoiceTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Description</th>
+                            <th>Qty</th>
+                            <th>Rate (₹)</th>
+                            <th>Amount (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>01</td>
+                            <td><input type="text" placeholder="Item description"></td>
+                            <td><input type="number" placeholder="Qty"></td>
+                            <td><input type="number" placeholder="Rate"></td>
+                            <td>0.00</td>
+                        </tr>
+                        <tr>
+                            <td>02</td>
+                            <td><input type="text" placeholder="Item description"></td>
+                            <td><input type="number" placeholder="Qty"></td>
+                            <td><input type="number" placeholder="Rate"></td>
+                            <td>0.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button id="addInvoiceItem" class="btn">Add Item</button>
+            </div>
+            
+            <div class="totals pdf-section">
+                <div class="totals-row">
+                    <span>Subtotal:</span>
+                    <span>₹0.00</span>
+                </div>
+                <div class="totals-row">
+                    <span>CGST @ 9%:</span>
+                    <span>₹0.00</span>
+                </div>
+                <div class="totals-row">
+                    <span>SGST @ 9%:</span>
+                    <span>₹0.00</span>
+                </div>
+                <div class="totals-row total">
+                    <span>Grand Total:</span>
+                    <span>₹0.00</span>
+                </div>
+            </div>
+            
+            <div class="terms pdf-section">
+                <h3>Payment Terms</h3>
+                <textarea id="invoicePaymentTerms" rows="2" placeholder="Payment terms..."></textarea>
+                
+                <h3>Notes</h3>
+                <textarea id="invoiceNotes" rows="3" placeholder="Additional notes..."></textarea>
+            </div>
+        </section>
+        
+        <!-- Bill Section -->
+        <section id="bill" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Bill</h2>
+                <button id="downloadBill" class="btn btn-download">Download as PDF</button>
+            </div>
+            
+            <div class="company-info pdf-section">
+                <div class="company-logo">
+                    <h2>A.J. Electronics</h2>
+                    <p>Brand: Interaktv</p>
+                    <p><input type="text" id="billCompanyAddress" placeholder="Company Address"></p>
+                    <p><input type="text" id="billCompanyGST" placeholder="GSTIN"></p>
+                    <p><input type="text" id="billCompanyContact" placeholder="Phone | Email"></p>
+                </div>
+                
+                <div class="client-info">
+                    <h3>Bill To:</h3>
+                    <input type="text" id="billClient" placeholder="Client Name">
+                    <input type="text" id="billAddress" placeholder="Address">
+                    <input type="text" id="billGST" placeholder="GSTIN">
+                </div>
+            </div>
+            
+            <div class="form-row pdf-section">
+                <div class="form-group">
+                    <label for="billDate">Bill Date:</label>
+                    <input type="date" id="billDate">
+                </div>
+                <div class="form-group">
+                    <label for="billNo">Bill No:</label>
+                    <input type="text" id="billNo" placeholder="BILL-001">
+                </div>
+            </div>
+            
+            <div class="pdf-section">
+                <table id="billTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Description</th>
+                            <th>Qty</th>
+                            <th>Rate (₹)</th>
+                            <th>Amount (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>01</td>
+                            <td><input type="text" placeholder="Item description"></td>
+                            <td><input type="number" placeholder="Qty"></td>
+                            <td><input type="number" placeholder="Rate"></td>
+                            <td>0.00</td>
+                        </tr>
+                        <tr>
+                            <td>02</td>
+                            <td><input type="text" placeholder="Item description"></td>
+                            <td><input type="number" placeholder="Qty"></td>
+                            <td><input type="number" placeholder="Rate"></td>
+                            <td>0.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button id="addBillItem" class="btn">Add Item</button>
+            </div>
+            
+            <div class="totals pdf-section">
+                <div class="totals-row">
+                    <span>Subtotal:</span>
+                    <span>₹0.00</span>
+                </div>
+                <div class="totals-row">
+                    <span>CGST @ 9%:</span>
+                    <span>₹0.00</span>
+                </div>
+                <div class="totals-row">
+                    <span>SGST @ 9%:</span>
+                    <span>₹0.00</span>
+                </div>
+                <div class="totals-row total">
+                    <span>Grand Total:</span>
+                    <span>₹0.00</span>
+                </div>
+            </div>
+            
+            <div class="terms pdf-section">
+                <h3>Payment Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="paymentMode">Payment Mode:</label>
+                        <select id="paymentMode">
+                            <option>Cash</option>
+                            <option>Bank Transfer</option>
+                            <option>Cheque</option>
+                            <option>Card</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentRef">Reference No:</label>
+                        <input type="text" id="paymentRef" placeholder="Reference number">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 A.J. Electronics - Interaktv. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Navigation between sections
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links and sections
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                
+                // Add active class to clicked link and corresponding section
+                this.classList.add('active');
+                const targetId = this.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+        
+        // Download functionality with PDF optimization
+        document.getElementById('downloadQuotation').addEventListener('click', function() {
+            const element = document.getElementById('quotation');
+            const opt = {
+                margin: 10,
+                filename: 'A.J.Electronics-Quotation.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        });
+        
+        document.getElementById('downloadInvoice').addEventListener('click', function() {
+            const element = document.getElementById('invoice');
+            const opt = {
+                margin: 10,
+                filename: 'A.J.Electronics-Invoice.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        });
+        
+        document.getElementById('downloadBill').addEventListener('click', function() {
+            const element = document.getElementById('bill');
+            const opt = {
+                margin: 10,
+                filename: 'A.J.Electronics-Bill.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        });
+        
+        // Add new quotation item
+        document.getElementById('addQuotationItem').addEventListener('click', function() {
+            const table = document.getElementById('quotationTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            const rowCount = table.rows.length;
+            
+            newRow.innerHTML = `
+                <td>${rowCount < 10 ? '0' + rowCount : rowCount}</td>
+                <td><input type="text" placeholder="Product Description"></td>
+                <td><textarea placeholder="Specifications" rows="3"></textarea></td>
+            `;
+        });
+        
+        // Add new quotation pricing item
+        document.getElementById('addQuotationPricingItem').addEventListener('click', function() {
+            const table = document.getElementById('quotationPricingTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            const rowCount = table.rows.length;
+            
+            newRow.innerHTML = `
+                <td>${rowCount < 10 ? '0' + rowCount : rowCount}</td>
+                <td><input type="text" placeholder="Particulars"></td>
+                <td><input type="number" placeholder="Qty"></td>
+                <td><input type="number" placeholder="Rate"></td>
+                <td>0.00</td>
+            `;
+            
+            // Add event listener to new row
+            newRow.addEventListener('input', function() {
+                calculateAmounts('quotationPricingTable');
+            });
+        });
+        
+        // Add new invoice item
+        document.getElementById('addInvoiceItem').addEventListener('click', function() {
+            const table = document.getElementById('invoiceTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            const rowCount = table.rows.length;
+            
+            newRow.innerHTML = `
+                <td>${rowCount < 10 ? '0' + rowCount : rowCount}</td>
+                <td><input type="text" placeholder="Item description"></td>
+                <td><input type="number" placeholder="Qty"></td>
+                <td><input type="number" placeholder="Rate"></td>
+                <td>0.00</td>
+            `;
+            
+            // Add event listener to new row
+            newRow.addEventListener('input', function() {
+                calculateAmounts('invoiceTable');
+            });
+        });
+        
+        // Add new bill item
+        document.getElementById('addBillItem').addEventListener('click', function() {
+            const table = document.getElementById('billTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            const rowCount = table.rows.length;
+            
+            newRow.innerHTML = `
+                <td>${rowCount < 10 ? '0' + rowCount : rowCount}</td>
+                <td><input type="text" placeholder="Item description"></td>
+                <td><input type="number" placeholder="Qty"></td>
+                <td><input type="number" placeholder="Rate"></td>
+                <td>0.00</td>
+            `;
+            
+            // Add event listener to new row
+            newRow.addEventListener('input', function() {
+                calculateAmounts('billTable');
+            });
+        });
+        
+        // Calculate amounts in real-time for all tables
+        function calculateAmounts(tableId) {
+            const table = document.getElementById(tableId);
+            const rows = table.getElementsByTagName('tbody')[0].rows;
+            let subtotal = 0;
+            
+            for (let row of rows) {
+                const qty = parseFloat(row.cells[2].querySelector('input').value) || 0;
+                const rate = parseFloat(row.cells[3].querySelector('input').value) || 0;
+                const amount = qty * rate;
+                
+                row.cells[4].textContent = amount.toFixed(2);
+                subtotal += amount;
+            }
+            
+            const cgst = subtotal * 0.09;
+            const sgst = subtotal * 0.09;
+            const grandTotal = subtotal + cgst + sgst;
+            
+            // Update totals display
+            const totalsContainer = document.querySelector(`#${tableId}`).closest('.section').querySelector('.totals');
+            totalsContainer.querySelector('.totals-row:nth-child(1) span:last-child').textContent = `₹${subtotal.toFixed(2)}`;
+            totalsContainer.querySelector('.totals-row:nth-child(2) span:last-child').textContent = `₹${cgst.toFixed(2)}`;
+            totalsContainer.querySelector('.totals-row:nth-child(3) span:last-child').textContent = `₹${sgst.toFixed(2)}`;
+            totalsContainer.querySelector('.totals-row.total span:last-child').textContent = `₹${grandTotal.toFixed(2)}`;
+        }
+        
+        // Add event listeners for input changes in all tables
+        document.getElementById('quotationPricingTable').addEventListener('input', function() {
+            calculateAmounts('quotationPricingTable');
+        });
+        
+        document.getElementById('invoiceTable').addEventListener('input', function() {
+            calculateAmounts('invoiceTable');
+        });
+        
+        document.getElementById('billTable').addEventListener('input', function() {
+            calculateAmounts('billTable');
+        });
+        
+        // Set current date as default for date fields
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('quotationDate').value = today;
+        document.getElementById('invoiceDate').value = today;
+        document.getElementById('billDate').value = today;
+    </script>
+</body>
+</html>
